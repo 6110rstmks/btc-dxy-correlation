@@ -20,10 +20,6 @@ dxy = yf.download(
     auto_adjust=False
 )
 
-print(btc)
-print(btc["Close"])
-print(btc["Close"].squeeze())
-
 # Closeだけ取り出す
 df_btc = btc["Close"].squeeze()
 df_dollar = dxy["Close"].squeeze()
