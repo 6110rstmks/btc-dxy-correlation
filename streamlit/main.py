@@ -29,17 +29,6 @@ st.caption(
     "Qiita記事「意外な事実：ビットコインのシャープレシオはS&P500を上回っていた」の検証 — "
     "[元記事](https://qiita.com/tikeda123/items/a03a251da3ae8206044b)"
 )
-
-st.markdown(
-    """
-記事の主張:
-- BTCはS&P500を年次シャープレシオで多くの年で上回った
-- 平均シャープレシオ: **BTC = 0.86** / **S&P500 = 0.65**
-
-このアプリはYahoo Financeの実データを使って上記主張を再検証します。
-"""
-)
-
 # ---------------------------------------------------------
 # Sidebar controls
 # ---------------------------------------------------------
@@ -153,9 +142,7 @@ sp500_avg = calc_df["SP500_calc"].mean()
 
 col1, col2, col3, col4 = st.columns(4)
 col1.metric("BTC 平均 (計算値)", f"{btc_avg:.2f}")
-col2.metric("BTC 平均 (記事の主張)", "0.86", delta=f"{btc_avg - 0.86:.2f}")
 col3.metric("S&P500 平均 (計算値)", f"{sp500_avg:.2f}")
-col4.metric("S&P500 平均 (記事の主張)", "0.65", delta=f"{sp500_avg - 0.65:.2f}")
 
 # ---------------------------------------------------------
 # Charts
@@ -166,16 +153,8 @@ chart_df = calc_df.set_index("year")[["BTC_calc", "SP500_calc"]]
 chart_df.columns = ["BTC", "S&P 500"]
 st.bar_chart(chart_df, color=["#f2a900", "#d62728"])
 
-st.subheader("平均シャープレシオ（計算値 vs 記事の主張）")
 
-avg_df = pd.DataFrame(
-    {
-        "計算値": [btc_avg, sp500_avg],
-        "記事の主張": [0.86, 0.65],
-    },
-    index=["BTC", "S&P 500"],
-)
-st.bar_chart(avg_df.T, color=["#f2a900", "#d62728"])
+
 
 # ---------------------------------------------------------
 # Matplotlib version (optional, more custom styling)
