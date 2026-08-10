@@ -181,19 +181,19 @@ calc_df = pd.DataFrame(results)
 # 5. Compare article values with calculated values
 # ---------------------------------------------------------
 
-merged = pd.merge(
-    article_data,
-    calc_df,
-    on="year"
-)
+# merged = pd.merge(
+#     article_data,
+#     calc_df,
+#     on="year"
+# )
 
-merged["BTC_diff"] = (
-    merged["BTC_calc"] - merged["BTC_article"]
-)
+# merged["BTC_diff"] = (
+#     merged["BTC_calc"] - merged["BTC_article"]
+# )
 
-merged["SP500_diff"] = (
-    merged["SP500_calc"] - merged["SP500_article"]
-)
+# merged["SP500_diff"] = (
+#     merged["SP500_calc"] - merged["SP500_article"]
+# )
 
 
 pd.set_option(
@@ -202,7 +202,7 @@ pd.set_option(
 )
 
 print("\n=== Annual Sharpe Ratio Comparison ===")
-print(merged.to_string(index=False))
+# print(merged.to_string(index=False))
 
 
 print("\n=== Average Sharpe Ratio (2018-2025) ===")
@@ -319,13 +319,13 @@ calc_avg = [
 
 x2 = np.arange(len(labels))
 
-ax2.bar(
-    x2 - width / 2,
-    article_avg,
-    width,
-    label="Article Average",
-    color="#555555"
-)
+# ax2.bar(
+#     x2 - width / 2,
+#     article_avg,
+#     width,
+#     label="Article Average",
+#     color="#555555"
+# )
 
 ax2.bar(
     x2 + width / 2,
@@ -353,15 +353,6 @@ ax2.grid(
 
 
 # Add value labels to the bars
-
-for i, v in enumerate(article_avg):
-    ax2.text(
-        i - width / 2,
-        v,
-        f"{v:.2f}",
-        ha="center",
-        va="bottom" if v >= 0 else "top"
-    )
 
 
 for i, v in enumerate(calc_avg):
