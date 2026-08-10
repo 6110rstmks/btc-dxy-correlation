@@ -34,17 +34,17 @@ import yfinance as yf
 # 1. Values reported in the article
 # ---------------------------------------------------------
 
-article_data = pd.DataFrame({
-    "year": [2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025],
-    "BTC_article": [
-        -0.79, 1.55, 2.20, 1.45,
-        -0.85, 1.10, 0.95, 1.25
-    ],
-    "SP500_article": [
-        -0.32, 0.94, 1.05, 0.93,
-        -0.76, 0.85, 0.70, 0.80
-    ],
-})
+# article_data = pd.DataFrame({
+#     "year": [2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025],
+#     "BTC_article": [
+#         -0.79, 1.55, 2.20, 1.45,
+#         -0.85, 1.10, 0.95, 1.25
+#     ],
+#     "SP500_article": [
+#         -0.32, 0.94, 1.05, 0.93,
+#         -0.76, 0.85, 0.70, 0.80
+#     ],
+# })
 
 
 # ---------------------------------------------------------
@@ -79,6 +79,7 @@ sp500 = yf.download(
 )["Close"]
 
 
+
 # Depending on the yfinance version, ["Close"] may return
 # a DataFrame with one column. Convert it to a Series.
 
@@ -93,8 +94,10 @@ if isinstance(sp500, pd.DataFrame):
 # 3. Calculate daily returns
 # ---------------------------------------------------------
 
-btc_ret = btc.pct_change().dropna()
-sp500_ret = sp500.pct_change().dropna()
+# 　単純リターンを計算　※対数リターンではない
+btc_return = btc.pct_change().dropna()
+
+sp500_return = sp500.pct_change().dropna()
 
 # Bitcoin trades 365 days per year.
 TRADING_DAYS_BTC = 365
@@ -139,8 +142,9 @@ results = []
 
 for year in range(2018, 2026):
 
-    btc_y = btc_ret[btc_ret.index.year == year]
-    sp500_y = sp500_ret[sp500_ret.index.year == year]
+    btc_y = btc_return[btc_return.index.year == year]
+    sp500_y = sp500_return[sp500_return.index.year == year]
+    print(f"{year} BTC daily returns:\n{btc_y}")
 
     btc_sharpe = (
         annual_sharpe(
@@ -151,6 +155,7 @@ for year in range(2018, 2026):
         if len(btc_y) > 0
         else np.nan
     )
+
 
     sp500_sharpe = (
         annual_sharpe(
@@ -202,17 +207,17 @@ print(merged.to_string(index=False))
 
 print("\n=== Average Sharpe Ratio (2018-2025) ===")
 
-print(
-    f"BTC     : "
-    f"Article={article_data['BTC_article'].mean():.2f}  "
-    f"Calculated={calc_df['BTC_calc'].mean():.2f}"
-)
+# print(
+#     f"BTC     : "
+#     f"Article={article_data['BTC_article'].mean():.2f}  "
+#     f"Calculated={calc_df['BTC_calc'].mean():.2f}"
+# )
 
-print(
-    f"S&P 500 : "
-    f"Article={article_data['SP500_article'].mean():.2f}  "
-    f"Calculated={calc_df['SP500_calc'].mean():.2f}"
-)
+# print(
+#     f"S&P 500 : "
+#     f"Article={article_data['SP500_article'].mean():.2f}  "
+#     f"Calculated={calc_df['SP500_calc'].mean():.2f}"
+# )
 
 
 # ---------------------------------------------------------
@@ -302,10 +307,10 @@ ax2 = axes[1]
 
 labels = ["BTC", "S&P 500"]
 
-article_avg = [
-    article_data["BTC_article"].mean(),
-    article_data["SP500_article"].mean()
-]
+# article_avg = [
+#     article_data["BTC_article"].mean(),
+#     article_data["SP500_article"].mean()
+# ]
 
 calc_avg = [
     calc_df["BTC_calc"].mean(),
@@ -371,14 +376,5 @@ for i, v in enumerate(calc_avg):
 
 plt.tight_layout()
 
-plt.savefig(
-    "sharpe_ratio_verification.png",
-    dpi=150
-)
-
-print(
-    "\nGraph saved as "
-    "sharpe_ratio_verification.png"
-)
 
 plt.show()
