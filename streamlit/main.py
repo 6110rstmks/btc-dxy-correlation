@@ -179,11 +179,10 @@ with st.expander("Matplotlibでのグラフ表示"):
     ax2 = axes[1]
     labels = ["BTC", "S&P 500"]
     calc_avg = [btc_avg, sp500_avg]
-    article_avg = [0.86, 0.65]
     x2 = np.arange(len(labels))
 
     ax2.bar(x2 - width / 2, calc_avg, width, label="Calculated", color="#2ca02c")
-    ax2.bar(x2 + width / 2, article_avg, width, label="Article claim", color="#555555")
+    # ax2.bar(x2 + width / 2, article_avg, width, label="Article claim", color="#555555")
     ax2.set_xticks(x2)
     ax2.set_xticklabels(labels)
     ax2.set_ylabel("Average Sharpe Ratio")
