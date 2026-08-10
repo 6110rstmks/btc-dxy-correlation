@@ -164,7 +164,7 @@ st.subheader("年次シャープレシオ比較")
 
 chart_df = calc_df.set_index("year")[["BTC_calc", "SP500_calc"]]
 chart_df.columns = ["BTC", "S&P 500"]
-st.bar_chart(chart_df)
+st.bar_chart(chart_df, color=["#f2a900", "#d62728"])
 
 st.subheader("平均シャープレシオ（計算値 vs 記事の主張）")
 
@@ -175,7 +175,7 @@ avg_df = pd.DataFrame(
     },
     index=["BTC", "S&P 500"],
 )
-st.bar_chart(avg_df)
+st.bar_chart(avg_df.T, color=["#f2a900", "#d62728"])
 
 # ---------------------------------------------------------
 # Matplotlib version (optional, more custom styling)
@@ -188,7 +188,7 @@ with st.expander("Matplotlibでのグラフ表示"):
     width = 0.35
 
     ax1.bar(x - width / 2, calc_df["BTC_calc"], width, label="BTC", color="#f2a900")
-    ax1.bar(x + width / 2, calc_df["SP500_calc"], width, label="S&P 500", color="#1f77b4")
+    ax1.bar(x + width / 2, calc_df["SP500_calc"], width, label="S&P 500", color="#d62728")
     ax1.axhline(0, color="black", linewidth=0.8)
     ax1.set_xticks(x)
     ax1.set_xticklabels(calc_df["year"])
