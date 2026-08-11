@@ -1,10 +1,8 @@
 """
-Streamlit app: Verification of the Qiita article
 "An Unexpected Fact: Bitcoin's Sharpe Ratio Has Outperformed the S&P 500"
-https://qiita.com/tikeda123/items/a03a251da3ae8206044b
 
 Run with:
-    streamlit run app.py
+    streamlit run main.py
 
 Requirements:
     pip install streamlit yfinance pandas numpy matplotlib --break-system-packages

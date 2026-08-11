@@ -1,19 +1,8 @@
 """
-Verification script for the Qiita article:
 "An Unexpected Fact: Bitcoin's Sharpe Ratio Has Outperformed the S&P 500"
 
-Article:
-https://qiita.com/tikeda123/items/a03a251da3ae8206044b
 
-Claims made in the article:
-
-- Bitcoin (BTC) outperformed the S&P 500 in annual Sharpe ratios
-  in many years from 2018 to 2025.
-- Average Sharpe ratio:
-    BTC    = 0.86
-    S&P 500 = 0.65
-
-This script recalculates the Sharpe ratio using actual daily price data
+This script calculates the Sharpe ratio using actual daily price data
 from Yahoo Finance and compares the results with the values reported
 in the article.
 
@@ -31,24 +20,7 @@ import yfinance as yf
 
 
 # ---------------------------------------------------------
-# 1. Values reported in the article
-# ---------------------------------------------------------
-
-# article_data = pd.DataFrame({
-#     "year": [2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025],
-#     "BTC_article": [
-#         -0.79, 1.55, 2.20, 1.45,
-#         -0.85, 1.10, 0.95, 1.25
-#     ],
-#     "SP500_article": [
-#         -0.32, 0.94, 1.05, 0.93,
-#         -0.76, 0.85, 0.70, 0.80
-#     ],
-# })
-
-
-# ---------------------------------------------------------
-# 2. Download actual price data from Yahoo Finance
+# 1. Download actual price data from Yahoo Finance
 #
 # BTC-USD: Bitcoin
 # ^GSPC: S&P 500
@@ -91,7 +63,7 @@ if isinstance(sp500, pd.DataFrame):
 
 
 # ---------------------------------------------------------
-# 3. Calculate daily returns
+# 2. Calculate daily returns
 # ---------------------------------------------------------
 
 # 　単純リターンを計算　※対数リターンではない
@@ -106,10 +78,10 @@ TRADING_DAYS_BTC = 365
 TRADING_DAYS_SP500 = 252
 
 
-def annual_sharpe(
+def annual_sharpe_ratio(
     daily_returns: pd.Series,
     trading_days: int,
-    rf: float = 0.0
+    risk_free_rate: float = 0.0
 ) -> float:
     """
     Calculate the annualized Sharpe ratio
@@ -131,11 +103,11 @@ def annual_sharpe(
     if annual_vol == 0:
         return np.nan
 
-    return (annual_return - rf) / annual_vol
+    return (annual_return - risk_free_rate) / annual_vol
 
 
 # ---------------------------------------------------------
-# 4. Recalculate annual Sharpe ratios
+# 3. Calculate annual Sharpe ratios
 # ---------------------------------------------------------
 
 results = []
@@ -144,10 +116,9 @@ for year in range(2018, 2026):
 
     btc_y = btc_return[btc_return.index.year == year]
     sp500_y = sp500_return[sp500_return.index.year == year]
-    print(f"{year} BTC daily returns:\n{btc_y}")
 
-    btc_sharpe = (
-        annual_sharpe(
+    btc_sharpe_ratio = (
+        annual_sharpe_ratio(
             btc_y,
             TRADING_DAYS_BTC,
             RISK_FREE_RATE
@@ -157,8 +128,8 @@ for year in range(2018, 2026):
     )
 
 
-    sp500_sharpe = (
-        annual_sharpe(
+    sp500_sharpe_ratio = (
+        annual_sharpe_ratio(
             sp500_y,
             TRADING_DAYS_SP500,
             RISK_FREE_RATE
@@ -169,8 +140,8 @@ for year in range(2018, 2026):
 
     results.append({
         "year": year,
-        "BTC_calc": btc_sharpe,
-        "SP500_calc": sp500_sharpe
+        "BTC_calc": btc_sharpe_ratio,
+        "SP500_calc": sp500_sharpe_ratio
     })
 
 
@@ -178,50 +149,25 @@ calc_df = pd.DataFrame(results)
 
 
 # ---------------------------------------------------------
-# 5. Compare article values with calculated values
+# 4. Show calculated Sharpe ratios
 # ---------------------------------------------------------
 
-# merged = pd.merge(
-#     article_data,
-#     calc_df,
-#     on="year"
-# )
-
-# merged["BTC_diff"] = (
-#     merged["BTC_calc"] - merged["BTC_article"]
-# )
-
-# merged["SP500_diff"] = (
-#     merged["SP500_calc"] - merged["SP500_article"]
-# )
-
-
+# PandasのDataFrameなどで浮動小数点数（float）をどう表示するかを指定する設定
 pd.set_option(
     "display.float_format",
     lambda x: f"{x:.2f}"
 )
 
-print("\n=== Annual Sharpe Ratio Comparison ===")
-# print(merged.to_string(index=False))
+print(calc_df.to_string(index=False))
 
 
-print("\n=== Average Sharpe Ratio (2018-2025) ===")
 
-# print(
-#     f"BTC     : "
-#     f"Article={article_data['BTC_article'].mean():.2f}  "
-#     f"Calculated={calc_df['BTC_calc'].mean():.2f}"
-# )
-
-# print(
-#     f"S&P 500 : "
-#     f"Article={article_data['SP500_article'].mean():.2f}  "
-#     f"Calculated={calc_df['SP500_calc'].mean():.2f}"
-# )
+print(f"BTC     : Calculated={calc_df['BTC_calc'].mean():.2f}")
+print(f"S&P 500 : Calculated={calc_df['SP500_calc'].mean():.2f}")
 
 
 # ---------------------------------------------------------
-# 6. Visualization
+# 5. Visualization
 # ---------------------------------------------------------
 
 fig, axes = plt.subplots(
@@ -237,43 +183,23 @@ fig, axes = plt.subplots(
 
 ax1 = axes[0]
 
-x = np.arange(len(merged))
-width = 0.2
+x = np.arange(len(calc_df))
+width = 0.35
 
 ax1.bar(
-    x - 1.5 * width,
-    merged["BTC_article"],
+    x - width / 2,
+    calc_df["BTC_calc"],
     width,
-    label="BTC (Article)",
+    label="BTC",
     color="#f2a900"
 )
 
 ax1.bar(
-    x - 0.5 * width,
-    merged["BTC_calc"],
+    x + width / 2,
+    calc_df["SP500_calc"],
     width,
-    label="BTC (Calculated)",
-    color="#f2a900",
-    alpha=0.5,
-    hatch="//"
-)
-
-ax1.bar(
-    x + 0.5 * width,
-    merged["SP500_article"],
-    width,
-    label="S&P 500 (Article)",
+    label="S&P 500",
     color="#1f77b4"
-)
-
-ax1.bar(
-    x + 1.5 * width,
-    merged["SP500_calc"],
-    width,
-    label="S&P 500 (Calculated)",
-    color="#1f77b4",
-    alpha=0.5,
-    hatch="//"
 )
 
 ax1.axhline(
@@ -283,12 +209,12 @@ ax1.axhline(
 )
 
 ax1.set_xticks(x)
-ax1.set_xticklabels(merged["year"])
+ax1.set_xticklabels(calc_df["year"])
 
 ax1.set_ylabel("Sharpe Ratio")
 
 ax1.set_title(
-    "Annual Sharpe Ratio: Article vs. Recalculated Values"
+    "Annual Sharpe Ratio: BTC vs. S&P 500 (Calculated)"
 )
 
 ax1.legend()
@@ -307,11 +233,6 @@ ax2 = axes[1]
 
 labels = ["BTC", "S&P 500"]
 
-# article_avg = [
-#     article_data["BTC_article"].mean(),
-#     article_data["SP500_article"].mean()
-# ]
-
 calc_avg = [
     calc_df["BTC_calc"].mean(),
     calc_df["SP500_calc"].mean()
@@ -319,16 +240,8 @@ calc_avg = [
 
 x2 = np.arange(len(labels))
 
-# ax2.bar(
-#     x2 - width / 2,
-#     article_avg,
-#     width,
-#     label="Article Average",
-#     color="#555555"
-# )
-
 ax2.bar(
-    x2 + width / 2,
+    x2,
     calc_avg,
     width,
     label="Calculated Average",
@@ -357,7 +270,7 @@ ax2.grid(
 
 for i, v in enumerate(calc_avg):
     ax2.text(
-        i + width / 2,
+        i,
         v,
         f"{v:.2f}",
         ha="center",
