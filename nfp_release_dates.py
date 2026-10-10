@@ -1,25 +1,36 @@
+```python
 """
-米国雇用統計(NFP)発表日の一覧(過去1年: 2025-08-12 〜 2026-08-12)。
-BLS(米労働統計局)の公式リリーススケジュールに基づく。
+U.S. Nonfarm Payrolls (NFP) release dates
+from September 2025 through October 2026.
 
-2025年10月分は政府機関閉鎖(シャットダウン)により発表中止、
-9月分は11/20に延期、10月分と11月分は12/16にまとめて発表された。
+Based on the official release schedule published by the
+U.S. Bureau of Labor Statistics (BLS).
+
+Due to the 2025 federal government shutdown, no separate
+Employment Situation report was published for October 2025.
+September 2025 data was released on November 20, 2025.
+October establishment-survey data was incorporated into
+the November 2025 report, released on December 16, 2025.
 """
 
-# (発表日, 対象月, 備考)
+# (Release date, reference month, notes)
 NFP_RELEASES = [
-    ("2025-09-05", "2025年8月分", ""),
-    ("2025-11-20", "2025年9月分", "政府機関閉鎖により延期"),
-    ("2025-12-16", "2025年10-11月分", "10月分は中止、11月分と合併発表"),
-    ("2026-01-09", "2025年12月分", ""),
-    ("2026-02-11", "2026年1月分", "政府機関閉鎖により延期"),
-    ("2026-03-06", "2026年2月分", ""),
-    ("2026-04-03", "2026年3月分", "聖金曜日のためCOMEX/FX休場、データなし"),
-    ("2026-05-08", "2026年4月分", "第2金曜日に延期"),
-    ("2026-06-05", "2026年5月分", ""),
-    ("2026-07-02", "2026年6月分", "独立記念日前のため木曜発表"),
-    ("2026-08-07", "2026年7月分", ""),
+    ("2025-09-05", "August 2025", ""),
+    ("2025-11-20", "September 2025", "Delayed due to government shutdown"),
+    ("2025-12-16", "October-November 2025", "October data affected by government shutdown"),
+    ("2026-01-09", "December 2025", ""),
+    ("2026-02-11", "January 2026", "Delayed release"),
+    ("2026-03-06", "February 2026", ""),
+    ("2026-04-03", "March 2026", "Good Friday; market data availability may be limited"),
+    ("2026-05-08", "April 2026", "Released on the second Friday"),
+    ("2026-06-05", "May 2026", ""),
+    ("2026-07-02", "June 2026", "Released on Thursday before Independence Day"),
+    ("2026-08-07", "July 2026", ""),
+    ("2026-09-04", "August 2026", ""),
+    ("2026-10-02", "September 2026", ""),
 ]
 
-# 発表時刻: 米東部時間 8:30 (America/New_York, DSTはzoneinfoが自動判定)
+# Release time: 8:30 AM Eastern Time.
+# ZoneInfo automatically handles daylight saving time.
 RELEASE_TIME_ET = (8, 30)
+```
