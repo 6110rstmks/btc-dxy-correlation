@@ -1,4 +1,3 @@
-```python
 """
 U.S. Nonfarm Payrolls (NFP) release dates
 from September 2025 through October 2026.
@@ -33,4 +32,3 @@ NFP_RELEASES = [
 # Release time: 8:30 AM Eastern Time.
 # ZoneInfo automatically handles daylight saving time.
 RELEASE_TIME_ET = (8, 30)
-```
